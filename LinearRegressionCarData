@@ -1,0 +1,74 @@
+import statistics as stats
+import matplotlib.pyplot as plt
+
+
+# hardcoded data
+data = {'Acura CL': (24, 3470), 'AM General Hummer': (12, 6564), 'Aston Martin DB7 Vantage': (14, 3913),
+        'Audi A4': (27.5, 2998), 'Bentley Arnage': (16, 5556), 'BMW 325': (24.5, 3241),
+        'Buick Century': (24.5, 3368), 'Cadillac Catera': (20.5, 3370), 'Chevrolet Astro': (19.5, 4323),
+        'Chrysler 300M': (24, 3591), 'Daewoo Lanos': (31, 2595), 'Dodge Caravan': (22, 3908),
+        'Ferrari 360 Modena': (13.5, 3200), 'Ford Crown Victoria': (21.5, 3927), 'GMC Jimmy': (19.5, 4114),
+        'Honda Accord': (29, 3329), 'Hyundai Accent': (32, 2350), 'Infiniti G20': (27.5, 2961),
+        'Isuzu Rodeo': (21, 3923), 'Jaguar S-Type': (21.5, 3816), 'Jeep Cherokee': (20, 3355),
+        'Kia Optima': (24.5, 3190), 'Lamborghini Diablo': (14, 3582), 'Land Rover Discovery': (15, 4630),
+        'Lexus ES 300': (22.5, 3373), 'Lincoln Continental': (21.5, 3848), 'Lotus Espirit': (19, 3043),
+        'Mazda 626': (29, 2864), 'Mercedes C-Class': (23, 3439), 'Mercury Cougar': (28.5, 3013),
+        'Mitsubishi Diamante': (21.5, 3461), 'Nissan Altima': (27, 3027), 'Oldsmobile Alero': (27, 3108),
+        'Plymouth Neon': (30, 2559), 'Pontiac Aztek': (22.5, 3779), 'Porsche 911': (21, 3075),
+        'Rolls-Royce Corniche': (13.5, 6301), 'Saab 9-3': (26, 3060), 'Saturn L100': (29, 3009),
+        'Subaru Forester': (24.5, 4175), 'Suzuki Esteem': (31.5, 2315), 'Toyota 4Runner': (18.5, 3930),
+        'VW Cabrio': (27.5, 2419), 'Volvo C70': (24.5, 3609)}
+
+
+# setting the two lists based on tuple formatting
+nums = data.values()
+
+mpg = []
+weight = []
+
+for num in nums:
+    mpg.append(num[0])
+    weight.append(num[1])
+
+
+# quick stats calculations
+avg_mpg = stats.mean(mpg)
+avg_weight = stats.mean(weight)
+n = len(mpg)
+
+
+def get_y(x):  # calculates what the y coordinates should be for the linear regression line
+    top = 0
+    bottom = 0
+
+    for i in range(n):
+        top += (weight[i] * mpg[i])
+        bottom += (weight[i]) ** 2
+
+    slope = (top - (n * avg_weight * avg_mpg)) / \
+        (bottom - (n * (avg_weight)**2))
+
+    return avg_mpg + slope*(x - avg_weight)
+
+
+x = [2100, 6600]                # lists for the linear regression coords
+y = [get_y(2100), get_y(6600)]
+
+plt.figure(figsize=(15, 10), dpi=300)
+plt.title('Ratio of Weight to MPG for 2001 Cars', fontsize=25, pad=15)
+plt.scatter(weight, mpg, linewidths=.5)
+line = plt.plot(x, y, color='red', label='Linear Regression')
+# attempted key, but not sure why the label is acting up
+plt.legend(line, fontsize=12, shadow=True)
+plt.xlabel('Weight (lbs)', fontsize=18, labelpad=10)
+plt.ylabel('Average MPG', fontsize=18, labelpad=10)
+plt.show()
+
+print()
+print('   Minimums and Maximums')
+print('----------------------------')
+print('Minimum Weight:   {} lbs'.format(min(weight)))
+print('Maximum Weight:   {} lbs'.format(max(weight)))
+print()
+print('Minimum MPG:      {} mpg'.format(min(mpg)))
+print('Maxmimum MPG:     {} mpg'.format(max(mpg)))
